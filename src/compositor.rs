@@ -551,7 +551,8 @@ impl vr::IVRCompositor028_Interface for Compositor {
             .for_each(|ctrl| ctrl.with_any_graphics_mut::<set_fade_grid>(bFadeGridIn));
     }
     fn GetCurrentFadeColor(&self, _bBackground: bool) -> vr::HmdColor_t {
-        todo!()
+        crate::warn_unimplemented!("GetCurrentFadeColor");
+        vr::HmdColor_t::default()
     }
     fn FadeToColor(
         &self,
