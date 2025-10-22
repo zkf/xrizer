@@ -40,7 +40,7 @@ new_key_type! {
 
 #[derive(macros::InterfaceImpl)]
 #[interface = "IVRInput"]
-#[versions(010, 007, 006, 005)]
+#[versions(010, 007, 006, 005, 004)]
 pub struct Input<C: openxr_data::Compositor> {
     openxr: Arc<OpenXrData<C>>,
     vtables: Vtables<C>,
@@ -1175,6 +1175,89 @@ impl<C: openxr_data::Compositor> vr::IVRInput010_Interface for Input<C> {
 
         self.loading_actions.store(false, Ordering::Relaxed);
         ret
+    }
+}
+
+impl<C: openxr_data::Compositor> vr::IVRInput004On005 for Input<C> {
+    fn GetSkeletalActionData(
+        &self,
+        action: vr::VRActionHandle_t,
+        action_data: *mut vr::InputSkeletalActionData_t,
+        action_data_size: u32,
+        restrict_to_device: vr::VRInputValueHandle_t,
+    ) -> vr::EVRInputError {
+        if restrict_to_device != vr::k_ulInvalidInputValueHandle {
+            crate::warn_once!("Device-restricted skeletal action data is not implemented yet.");
+        }
+
+        <Self as vr::IVRInput010_Interface>::GetSkeletalActionData(
+            self,
+            action,
+            action_data,
+            action_data_size,
+        )
+    }
+
+    fn GetSkeletalBoneData(
+        &self,
+        action: vr::VRActionHandle_t,
+        transform_space: vr::EVRSkeletalTransformSpace,
+        motion_range: vr::EVRSkeletalMotionRange,
+        transform_array: *mut vr::VRBoneTransform_t,
+        transform_array_count: u32,
+        restrict_to_device: vr::VRInputValueHandle_t,
+    ) -> vr::EVRInputError {
+        if restrict_to_device != vr::k_ulInvalidInputValueHandle {
+            crate::warn_once!("Device-restricted skeletal bone data is not implemented yet.");
+        }
+
+        <Self as vr::IVRInput010_Interface>::GetSkeletalBoneData(
+            self,
+            action,
+            transform_space,
+            motion_range,
+            transform_array,
+            transform_array_count,
+        )
+    }
+
+    fn GetSkeletalBoneDataCompressed(
+        &self,
+        _action: vr::VRActionHandle_t,
+        _transform_space: vr::EVRSkeletalTransformSpace,
+        _motion_range: vr::EVRSkeletalMotionRange,
+        _compressed_data: *mut ::std::os::raw::c_void,
+        _compressed_size: u32,
+        _required_compressed_size: *mut u32,
+        _restrict_to_device: vr::VRInputValueHandle_t,
+    ) -> vr::EVRInputError {
+        todo!()
+    }
+
+    fn DecompressSkeletalBoneData(
+        &self,
+        _compressed_buffer: *mut ::std::os::raw::c_void,
+        _compressed_buffer_size: u32,
+        _transform_space: *mut vr::EVRSkeletalTransformSpace,
+        _transform_array: *mut vr::VRBoneTransform_t,
+        _transform_array_count: u32,
+    ) -> vr::EVRInputError {
+        todo!()
+    }
+
+    fn GetOriginLocalizedName(
+        &self,
+        origin: vr::VRInputValueHandle_t,
+        name_array: *mut c_char,
+        name_array_size: u32,
+    ) -> vr::EVRInputError {
+        <Self as vr::IVRInput010_Interface>::GetOriginLocalizedName(
+            self,
+            origin,
+            name_array,
+            name_array_size,
+            0xFFFFFFFFu32 as i32,
+        )
     }
 }
 
